@@ -1,131 +1,120 @@
 package model;
 
+import controller.FlightController;
 import display.StringConstant;
+
 import java.util.Scanner;
 
-public class FlightSystem 
-{
-    public static void main(String[] args) 
-    {
+public class FlightSystem {
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        FlightNetwork network = new FlightNetwork();
+        FlightController controller = new FlightController();
 
-        while (true) 
-        {
+        while (true) {
             System.out.println(StringConstant.MAIN_MENU);
-            System.out.print("Enter choice: ");
-            String choice = scanner.nextLine();
+            System.out.print("Enter your option: ");
+            String mainChoice = scanner.nextLine();
 
-            switch (choice) 
-            {
+            switch (mainChoice) {
                 case "1":
-                    handleAirportMenu(scanner, network);
+                    // Airport Management Menu
+                    while (true) {
+                        System.out.println(StringConstant.AIRPORT_MENU);
+                        System.out.print("Enter your option: ");
+                        String airportChoice = scanner.nextLine();
+
+                        switch (airportChoice) {
+                            case "1":
+                                System.out.print("Enter new airport code: ");
+                                controller.addAirport(scanner.nextLine().toUpperCase());
+                                break;
+                            case "2":
+                                System.out.print("Enter airport code to remove: ");
+                                controller.removeAirport(scanner.nextLine().toUpperCase());
+                                break;
+                            case "3":
+                                System.out.print("Enter airport code to search: ");
+                                controller.searchAirport(scanner.nextLine().toUpperCase());
+                                break;
+                            case "0":
+                                break;
+                            default:
+                                System.out.println("Invalid input. Try again.");
+                        }
+
+                        if (airportChoice.equals("0")) break;
+                        System.out.println("\nPress Enter to return...");
+                        scanner.nextLine();
+                    }
                     break;
+
                 case "2":
-                    handleFlightMenu(scanner, network);
+                    // Flight Route Management Menu
+                    while (true) {
+                        System.out.println(StringConstant.FLIGHT_MENU);
+                        System.out.print("Enter your option: ");
+                        String flightChoice = scanner.nextLine();
+
+                        switch (flightChoice) {
+                            case "1":
+                                System.out.print("Enter source airport: ");
+                                String from = scanner.nextLine().toUpperCase();
+                                System.out.print("Enter destination airport: ");
+                                String to = scanner.nextLine().toUpperCase();
+                                controller.addFlight(from, to);
+                                break;
+                            case "2":
+                                System.out.print("Enter source airport: ");
+                                String f1 = scanner.nextLine().toUpperCase();
+                                System.out.print("Enter destination airport: ");
+                                String f2 = scanner.nextLine().toUpperCase();
+                                controller.removeFlight(f1, f2);
+                                break;
+                            case "0":
+                                break;
+                            default:
+                                System.out.println("Invalid input. Try again.");
+                        }
+
+                        if (flightChoice.equals("0")) break;
+                        System.out.println("\nPress Enter to return...");
+                        scanner.nextLine();
+                    }
                     break;
+
                 case "3":
-                    handleNetworkMenu(scanner, network);
+                    // Network View & Traversal Menu
+                    while (true) {
+                        System.out.println(StringConstant.NETWORK_MENU);
+                        System.out.print("Enter your option: ");
+                        String networkChoice = scanner.nextLine();
+
+                        switch (networkChoice) {
+                            case "1":
+                                controller.displayNetwork();
+                                break;
+                            case "2":
+                                System.out.print("Enter starting airport code for BFS: ");
+                                controller.bfsTraversal(scanner.nextLine().toUpperCase());
+                                break;
+                            case "0":
+                                break;
+                            default:
+                                System.out.println("Invalid input. Try again.");
+                        }
+
+                        if (networkChoice.equals("0")) break;
+                        System.out.println("\nPress Enter to return...");
+                        scanner.nextLine();
+                    }
                     break;
+
                 case "0":
                     System.out.println(StringConstant.EXIT_BANNER);
                     return;
+
                 default:
-                    System.out.println("Invalid input. Try again.");
-            }
-
-            System.out.println("\nPress Enter to return to menu...");
-            scanner.nextLine();
-        }
-    }
-
-    private static void handleAirportMenu(Scanner scanner, FlightNetwork network) 
-    {
-        while (true) 
-        {
-            System.out.println(StringConstant.AIRPORT_MENU);
-            System.out.print("Enter choice: ");
-            String choice = scanner.nextLine();
-
-            switch (choice) 
-            {
-                case "1":
-                    System.out.print("Enter new airport code: ");
-                    String code = scanner.nextLine().toUpperCase();
-                    network.addAirport(code);
-                    break;
-                case "2":
-                    System.out.print("Enter airport code to remove: ");
-                    String remove = scanner.nextLine().toUpperCase();
-                    network.removeAirport(remove);
-                    break;
-                case "3":
-                    System.out.print("Enter airport code to search: ");
-                    String search = scanner.nextLine().toUpperCase();
-                    network.searchAirport(search);
-                    break;
-                case "0":
-                    return;
-                default:
-                    System.out.println("Invalid input.");
-            }
-        }
-    }
-
-    private static void handleFlightMenu(Scanner scanner, FlightNetwork network) 
-    {
-        while (true) 
-        {
-            System.out.println(StringConstant.FLIGHT_MENU);
-            System.out.print("Enter choice: ");
-            String choice = scanner.nextLine();
-
-            switch (choice) 
-            {
-                case "1":
-                    System.out.print("Enter source airport: ");
-                    String from = scanner.nextLine().toUpperCase();
-                    System.out.print("Enter destination airport: ");
-                    String to = scanner.nextLine().toUpperCase();
-                    network.addFlight(from, to);
-                    break;
-                case "2":
-                    System.out.print("Enter source airport: ");
-                    String rFrom = scanner.nextLine().toUpperCase();
-                    System.out.print("Enter destination airport: ");
-                    String rTo = scanner.nextLine().toUpperCase();
-                    network.removeFlight(rFrom, rTo);
-                    break;
-                case "0":
-                    return;
-                default:
-                    System.out.println("Invalid input.");
-            }
-        }
-    }
-
-    private static void handleNetworkMenu(Scanner scanner, FlightNetwork network) 
-    {
-        while (true) 
-        {
-            System.out.println(StringConstant.NETWORK_MENU);
-            System.out.print("Enter choice: ");
-            String choice = scanner.nextLine();
-
-            switch (choice) 
-            {
-                case "1":
-                    network.displayNetworkAsLineGraph();
-                    break;
-                case "2":
-                    System.out.print("Enter starting airport: ");
-                    String start = scanner.nextLine().toUpperCase();
-                    network.bfs(start);
-                    break;
-                case "0":
-                    return;
-                default:
-                    System.out.println("Invalid input.");
+                    System.out.println("Invalid input. Please try again.");
             }
         }
     }
