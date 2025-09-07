@@ -1,3 +1,5 @@
+package model;
+
 import display.FlightSystemUtils;
 import java.io.*;
 import java.util.*;
@@ -240,4 +242,53 @@ public class FlightNetwork
             System.err.println("Error writing flight file: " + e.getMessage());
         }
     }
+
+    public void searchAirport(String code) {
+        if (flightMap.containsKey(code)) {
+            System.out.println("Airport found: " + code);
+            List<String> connections = flightMap.get(code);
+            if (!connections.isEmpty()) {
+                System.out.println("Connected flights:");
+                for (String dest : connections) {
+                    System.out.println("→ " + dest);
+                }
+            } else {
+                System.out.println("No flights connected to this airport.");
+            }
+        } else {
+            System.out.println("Airport not found: " + code);
+        }
+    }
+
+    public void removeFlight(String from, String to) {
+        if (!flightMap.containsKey(from) || !flightMap.containsKey(to)) {
+            System.out.println("One or both airports do not exist.");
+            return;
+        }
+
+        if (flightMap.get(from).remove(to)) {
+            flightMap.get(to).remove(from);
+            saveData();
+            System.out.println("Flight from " + from + " to " + to + " removed.");
+        } else {
+            System.out.println("Flight route does not exist.");
+        }
+    }
+
+    public void removeAirport(String code) {
+        if (!flightMap.containsKey(code)) {
+            System.out.println("Airport does not exist.");
+            return;
+        }
+
+        // Remove all connections to this airport
+        for (String other : flightMap.get(code)) {
+            flightMap.get(other).remove(code);
+        }
+
+        flightMap.remove(code);
+        saveData();
+        System.out.println("Airport " + code + " and all related routes removed.");
+    }
+
 }
